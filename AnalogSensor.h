@@ -36,11 +36,12 @@ public:
     _customFunc = false;
   }
 
-  float read() {
+  inline float read() {
+    int raw = analogRead(pin);
     if (_customFunc) {
-      return cf(analogRead(pin));
+      return cf(raw);
     } else {
-      return m * ((float)analogRead(pin)) + b;
+      return m * ((float)raw) + b;
     }
   }
 };

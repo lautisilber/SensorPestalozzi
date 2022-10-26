@@ -50,12 +50,14 @@ void ShowDisplay(bool cycle=false) {
 
   AnalogSensor *sensor = &sensors[index];
 
-  lcd.setCursor(0, 0);
-  lcd.print(sensor->name);
-
   const size_t valueStrLen = 16 + 1;
   char valueStr[valueStrLen]{0};
-  snprintf(valueStr, valueStrLen-1, "%.2f %s", sensor->read(), sensor->unit);
+  float value = sensor->read();
+  snprintf(valueStr, valueStrLen-1, "%.2f %s", value, sensor->unit);
+
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print(sensor->name);
   lcd.setCursor(0, 1);
   lcd.print(valueStr);
 
