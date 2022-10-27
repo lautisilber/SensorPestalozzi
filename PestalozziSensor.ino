@@ -2,7 +2,7 @@
 #include <math.h>
 #include "AnalogSensor.h"
 
-
+/// sensors ///
 float cal3(int raw) {
   if (raw <= 0) raw += 0.0001;
   return log(((float)raw) / 32741) / 0.0464;  
@@ -14,7 +14,11 @@ AnalogSensor sensors[] = {
   AnalogSensor(A1, "sens2", "C", -0.5, 3),
   AnalogSensor(A2, "sensor 3", "dB", &cal3)
 };
+/// sensors ///
 
+
+#define CHANGE_BUTTON_PIN 9
+#define LED_PIN 13
 
 #define UPDATE_TIME_MS 2000
 #define DEBOUNCE_MS 50
@@ -25,9 +29,6 @@ AnalogSensor sensors[] = {
 const int rs = 2, en = 3, d4 = 4, d5 = 5, d6 = 6, d7 = 7; // Nano
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
-#define CHANGE_BUTTON_PIN 9
-#define LED_PIN 13
-
 void setup() {
   Serial.begin(9600);
 
@@ -37,6 +38,29 @@ void setup() {
   lcd.begin(16, 2);
 }
 
+
+void ShowDisplay(bool cycle=false);
+bool ToggleON();
+void ToggleLED(bool turnOn=true);
+void loop() {
+  static unsigned long lastTime = millis();
+
+  if (ToggleON()) {
+    ShowDisplay(true);
+    ToggleLED();
+    lastTime = millis();
+  }
+
+  if (abs(millis() - lastTime) > UPDATE_TIME_MS) {
+    ShowDisplay(false);
+    lastTime = millis();
+  }
+
+  ToggleLED(false);
+}
+
+
+//////////// Display ////////////
 
 void ShowDisplay(bool cycle=false) {
   static bool init = true;
@@ -64,28 +88,8 @@ void ShowDisplay(bool cycle=false) {
   lcd.print(valueStr);
 }
 
-bool ToggleON();
-void ToggleLED(bool turnOn=true);
-void loop() {
-  static unsigned long lastTime = millis();
 
-  if (ToggleON()) {
-    ShowDisplay(true);
-    ToggleLED();
-    lastTime = millis();
-  }
-
-  if (abs(millis() - lastTime) > UPDATE_TIME_MS) {
-    ShowDisplay(false);
-    lastTime = millis();
-  }
-
-  ToggleLED(false);
-}
-
-
-
-//////////// toggle ON ////////////
+//////////// Toggle ON ////////////
 
 inline bool StateRaw() {
   bool raw = !digitalRead(CHANGE_BUTTON_PIN);
@@ -128,6 +132,7 @@ bool ToggleON() {
 
 
 //////////// ToggleLED ////////////
+
 void ToggleLED(bool turnOn=true) {
   static bool state = false;
   static unsigned long lastTime = millis();
