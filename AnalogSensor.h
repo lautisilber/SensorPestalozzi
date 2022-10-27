@@ -23,7 +23,7 @@ public:
     pin = analogPin;
     cf = calibrationFunction;
     strlcpy(name, sensorName, _ANALOG_SENSOR_MAX_NAME_SIZE);
-    strlcpy(name, sensorUnit, _ANALOG_SENSOR_MAX_UNIT_SIZE);
+    strlcpy(unit, sensorUnit, _ANALOG_SENSOR_MAX_UNIT_SIZE);
     _customFunc = true;
   }
 
@@ -32,7 +32,7 @@ public:
     m = mParam;
     b = bParam;
     strlcpy(name, sensorName, _ANALOG_SENSOR_MAX_NAME_SIZE);
-    strlcpy(name, sensorUnit, _ANALOG_SENSOR_MAX_UNIT_SIZE);
+    strlcpy(unit, sensorUnit, _ANALOG_SENSOR_MAX_UNIT_SIZE);
     _customFunc = false;
   }
 
